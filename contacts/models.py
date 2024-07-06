@@ -13,10 +13,12 @@ class Contacto(models.Model):
     alias = models.CharField(max_length=100)
     email = models.EmailField(blank=False)
     emailAdicionales = models.CharField(max_length=200)
-    telefono = models.CharField(max_length=100)
+    telefono = models.CharField(max_length=10)
     telefonoAdicional = models.CharField(max_length=200)
     direccion = models.CharField(max_length=100)
     direccionAdicional = models.CharField(max_length=200)
-    foto = models.ImageField(null=True, upload_to='{% static/images/%}')
+    foto = models.ImageField(upload_to='contacts/', null=False, blank=False)
     create_at = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return self.nombre
