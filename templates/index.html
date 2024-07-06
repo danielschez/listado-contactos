@@ -3,7 +3,17 @@
 {% block content %}
 
     <div class="col">
+        <h1> {{ message }} </h1>
 
+        <ul class="list-group">
+            {% for contact in contactos %}
+                <li class="list-group-item">
+                    <h3>{{ contact.nombre }} {{ contact.apellidoPaterno }} {{ contact.apellidoMaterno }}</h3>
+                    <p>{{ contact.email }}</p>
+                    <p>{{ contact.telefono }}</p>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 
 {% endblock %}
