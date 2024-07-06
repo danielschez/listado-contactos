@@ -8,11 +8,16 @@ from django.contrib.auth import authenticate
 
 from django.contrib.auth.models import User
 
+from contacts.models import Contacto
+
 from .forms import RegisterForm
 
 def index(request):
+    contactos = Contacto.objects.all()
     return render(request, 'index.html', {
-        'title': 'Sign In' #context
+        'message': 'Listados de contactos',
+        'title': 'Catalogo de Contactos',
+        'contactos': contactos,
     })
 
 def login_view(request):
