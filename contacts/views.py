@@ -1,6 +1,8 @@
 from typing import Any
 from django.shortcuts import render
 
+from django.db.models import Q
+
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
@@ -23,4 +25,21 @@ class ContactDetailView(DetailView): #id ->pk
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         print (context)
+        return context
+    
+class ContactSearchListView(ListView):
+    template_name = 'contacts/search.html'
+
+    def get_queryset(self):
+        #SELECT * FROM CONTACTOS WHERE nombre like %valor%
+        filters = Q(nombre__icontains=self.query()) | Q(apellidoPaterno__icontains=self.query()) | Q(apellidoMaterno__icontains=self.query())
+        return Contacto.objects.filter(filters)
+    
+    def query(self):
+        return self.request.GET.get('q')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.query()
+        context['count'] =context['contacto_list'].count()
         return context
