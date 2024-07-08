@@ -1,5 +1,5 @@
 from typing import Any
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.db.models import Q
 
@@ -43,3 +43,4 @@ class ContactSearchListView(ListView):
         context['query'] = self.query()
         context['count'] =context['contacto_list'].count()
         return context
+    

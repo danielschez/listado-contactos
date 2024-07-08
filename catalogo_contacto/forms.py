@@ -2,6 +2,13 @@ from django import forms
 
 from django.contrib.auth.models import User
 
+#FORM CONTACTS
+from datetime import datetime
+
+now = datetime.now()
+BIRTH_YEAR_CHOICES = [i for i in range(1950, now.year+1)]
+
+
 class RegisterForm(forms.Form):
     username = forms.CharField(required=True, max_length=50,
                                widget=forms.TextInput(attrs={
