@@ -1,8 +1,6 @@
 from typing import Any
 from django.shortcuts import render, redirect
 
-from django.db.models import Q
-
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
