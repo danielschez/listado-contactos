@@ -8,7 +8,6 @@ from datetime import datetime
 now = datetime.now()
 BIRTH_YEAR_CHOICES = [i for i in range(1950, now.year+1)]
 
-
 class RegisterForm(forms.Form):
     username = forms.CharField(required=True, max_length=50,
                                widget=forms.TextInput(attrs={
@@ -62,3 +61,29 @@ class RegisterForm(forms.Form):
             self.cleaned_data.get('email'),
             self.cleaned_data.get('password')
         )
+
+
+############################################################################################
+
+
+class RegistrationForm(forms.Form):
+    nombre = forms.CharField(label='Nombre', required=True, max_length=100, min_length=4,
+                             widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'nombre'}))
+    apellidoPaterno = forms.CharField(label='Apellido Paterno', required=True, max_length=100, min_length=4,
+                                     widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'apellidoPaterno'}))
+    apellidoMaterno = forms.CharField(label='Apellido Materno', max_length=100,
+                                       widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'apellidoMaterno'}))
+
+    fechaNacimiento = forms.DateField(label='Fecha de Nacimiento',
+        widget=forms.SelectDateWidget(years=BIRTH_YEAR_CHOICES, attrs={'class': 'form-control', 'id': 'fechaNacimiento'}))
+
+    alias = forms.CharField(label='Alias', max_length=50, required=True,
+                             widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'alias'}))
+    email = forms.EmailField(label='Correo', required=True,
+                             widget=forms.EmailInput(attrs={'class': 'form-control', 'id': 'email'}))
+    telefono = forms.CharField(label='Telefono', max_length=10, required=True,  # Make required
+                               widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'telefono'}))
+    direccion = forms.CharField(label='Dirección', max_length=200, required=True,  # Make required
+                                 widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'direccion'}))
+    foto = forms.ImageField(label='Foto', required=False,  # Make optional
+                             widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'foto'}))

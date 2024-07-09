@@ -1,15 +1,193 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="col-3">
-    {% if contacto.foto %}
-        <img class="img-fluid" src="{{ contacto.foto.url }}" alt="{{ contacto.nombre }}" width="100" height="100">
-    {% endif %}
-</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+{% load static %}
 
-<div class="col">
-    <div class="h1">
-        {{ contacto.nombre }} {{ contacto.apellidoPaterno }}
-    </div>
+<script>
+$(document).ready(function() {
+    let emailCount = {{ email_adicionales_count }}; // Inicializar el contador con el número de emails adicionales
+    let telCount = {{ telefono_adicionales_count }};
+    let dirCount = {{ direccion_adicionales_count }};
+
+    function addEmailField(email, index) {
+        let newEmail = `
+        <div class="form-group">
+            <label for="extra_email_${index + 1}">Email Extra ${index + 1}:</label>
+            <input type="email" id="extra_email_${index + 1}" name="extra_email_${index + 1}" class="form-control" value="${email}">
+        </div>`;
+        $('#fields_email').append(newEmail);
+    }
+
+    // Añadir campos de correo electrónico extra existentes
+    {% for email in emailExtra %}
+        addEmailField("{{ email }}", {{ forloop.counter0 }});
+    {% endfor %}
+
+    // Añadir nuevos campos de correo electrónico extra
+    $('#add_email').click(function() {
+        addEmailField("", emailCount);
+        emailCount++;
+        $('#total_email').val(emailCount);
+    });
+
+    $('#total_email').val(emailCount);
+
+    /***********************************************************************************/
+
+    function addTelField(telefono, index) {
+        let newTel = `
+        <div class="form-group">
+            <label for="telefono_${index + 1}">Teléfono ${index + 1}:</label>
+            <input type="tel" id="telefono_${index + 1}" name="telefono_${index + 1}" class="form-control" value="${telefono}" pattern="[0-9]{10}">
+        </div>`;
+        $('#fields_telefono').append(newTel);
+    }
+
+    {% for telefono in telefonoExtra %}
+        addTelField("{{ telefono }}", {{ forloop.counter0 }});
+    {% endfor %}
+
+    $('#add_telefono').click(function() {
+        addTelField("", telCount);
+        telCount++;
+        $('#total_tel').val(telCount);
+    });
+
+    $('#total_tel').val(telCount);
+
+    /***********************************************************************************/
+
+    function addDirField(direccion, index) {
+        let newDir = `
+        <div class="form-group">
+            <label for="direccion_${index + 1}">Dirección ${index + 1}:</label>
+            <input type="text" id="direccion_${index + 1}" name="direccion_${index + 1}" value="${direccion}" class="form-control">
+        </div>`;
+        $('#fields_direccion').append(newDir);
+    }
+
+    {% for direccion in direccionExtra %}
+        addDirField("{{ direccion }}", {{ forloop.counter0 }});
+    {% endfor %}
+
+    $('#add_direccion').click(function() {
+        addDirField("", dirCount);
+        dirCount++;
+        $('#total_dir').val(dirCount);
+    });
+
+    $('#total_dir').val(dirCount);
+
+});
+</script>
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+    }
+
+    .form-container h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-container .form-group {
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="form-container">
+    <h1>{{ title }}</h1>
+    {% if errors %}
+        <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post" action="{# url 'contacts:contact-update' pk=contacto.pk #}" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="nombre">Nombre(s)</label>
+                <input type="text" class="form-control" value="{{ contacto.nombre }}" id="nombre" name="nombre">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="apellidoPaterno">Apellido Paterno</label>
+                <input type="text" class="form-control" value="{{ contacto.apellidoPaterno }}" id="apellidoPaterno" name="apellidoPaterno">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="apellidoMaterno">Apellido Materno</label>
+                <input type="text" class="form-control" value="{{ contacto.apellidoMaterno }}" id="apellidoMaterno" name="apellidoMaterno">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                <input type="date" class="form-control" value="{{ contacto.fechaNacimiento|date:'Y-m-d' }}" id="fechaNacimiento" name="fechaNacimiento">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="alias">Alias</label>
+                <input type="text" class="form-control" value="{{ contacto.alias }}" id="alias" name="alias">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" class="form-control" value="{{ contacto.email }}" id="email" name="email">
+            </div>
+        </div>
+
+        <div id="fields_email"></div>
+        <input type="hidden" value="" id="total_email" name="total_email">
+        <button type="button" id="add_email" class="btn btn-secondary mb-3">Agregar Correo</button>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="telefono">Teléfono</label>
+                <input type="text" class="form-control" value="{{ contacto.telefono }}" id="telefono" name="telefono" pattern="[0-9]{10}">
+            </div>
+        </div>
+
+        <div id="fields_telefono"></div>
+        <input type="hidden" value="" id="total_tel" name="total_tel">
+        <button type="button" id="add_telefono" class="btn btn-secondary mb-3">Agregar Teléfono</button>
+
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="direccion">Dirección</label>
+                <input type="text" class="form-control" value="{{ contacto.direccion }}" value="" id="direccion" name="direccion">
+            </div>
+        </div>
+
+        <div id="fields_direccion"></div>
+        <input type="hidden" value="" id="total_dir" name="total_dir">
+        <button type="button" id="add_direccion" class="btn btn-secondary mb-3">Agregar Dirección</button>
+
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="foto">Foto</label>
+                {% if contacto.foto %}
+                    <div>
+                        <img src="{{ contacto.foto.url }}" alt="Foto de {{ contacto.nombre }}" style="max-width: 200px; max-height: 200px;">
+                    </div>
+                {% endif %}
+                <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+            </div>
+        </div>
+
+        <div class="form-group mt-4 text-center">
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+        </div>
+    </form>
 </div>
 {% endblock %}

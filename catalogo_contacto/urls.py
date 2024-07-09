@@ -17,6 +17,8 @@ urlpatterns = [
     path('usuarios/registro', views.register, name='register'),
     path('admin/', admin.site.urls),
     path('contactos/', include('contacts.urls')),
+    path('registro', views.register_contacts, name='register_Contact'),
+    path('success', views.register_success, name='success'),
 ]
 
 if settings.DEBUG:
