@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -14,7 +14,7 @@ from django.urls import reverse_lazy
 from .models import Contacto
 
 
-class ContactListView(ListView):
+class ContactListView(LoginRequiredMixin, ListView):
     template_name = 'index.html'
     queryset = Contacto.objects.all().order_by('id')
 
