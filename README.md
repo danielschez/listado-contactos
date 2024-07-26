@@ -64,3 +64,10 @@ El proyecto implementa las siguientes vistas CRUD:
 - **Eliminar**: Permite borrar un contacto.
 
 ## Formularios
+
+Se utilizan formularios Django para gestionar las operaciones CRUD. Los formularios permiten la validación y el procesamiento de los datos de entrada.
+
+## Plantillas
+
+Las plantillas HTML están estructuradas utilizando Bootstrap para una interfaz de usuario sencilla y responsive.
+
